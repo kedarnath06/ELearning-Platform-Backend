@@ -5,12 +5,15 @@ import com.ELearningPlatform.serviceinterface.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
+@Validated
 public class CourseController {
     private final CourseService courseService;
 
@@ -19,13 +22,19 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<Course> createCourse(@Valid @RequestBody Course course) {
+    public ResponseEntity<?> createCourse(@Valid @RequestBody Course course, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
         Course createdCourse = courseService.createCourse(course);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
+        return new ResponseEntity<>(createdCourse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course) {
+    public ResponseEntity<?> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
         return ResponseEntity.ok(courseService.updateCourse(id, course));
     }
 

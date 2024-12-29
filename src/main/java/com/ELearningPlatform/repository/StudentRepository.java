@@ -15,4 +15,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByCourseId(@Param("id") Long id);
 
     Student findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

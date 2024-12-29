@@ -1,9 +1,11 @@
 package com.ELearningPlatform.serviceimplementation;
 
 import com.ELearningPlatform.entity.Course;
+import com.ELearningPlatform.exception.CourseNotFoundException;
 import com.ELearningPlatform.repository.CourseRepository;
 import com.ELearningPlatform.serviceinterface.CourseService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,14 +18,17 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public Course createCourse(Course course) {
         return courseRepository.save(course);
     }
 
     @Override
+    @Transactional
     public Course updateCourse(Long id, Course course) {
         Course existingCourse = courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new CourseNotFoundException(id));
+
         existingCourse.setName(course.getName());
         existingCourse.setDescription(course.getDescription());
         existingCourse.setStartDate(course.getStartDate());
@@ -33,22 +38,29 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public void deleteCourse(Long id) {
+        if (!courseRepository.existsById(id)) {
+            throw new CourseNotFoundException(id);
+        }
         courseRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Course getCourseById(Long id) {
         return courseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new CourseNotFoundException(id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Course> getCoursesByInstructorId(Long instructorId) {
         return courseRepository.findByInstructorId(instructorId);
     }

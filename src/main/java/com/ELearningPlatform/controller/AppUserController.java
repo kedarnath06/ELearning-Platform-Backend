@@ -5,14 +5,16 @@ import com.ELearningPlatform.serviceinterface.AppUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Validated
 public class AppUserController {
-
     private final AppUserService appUserService;
 
     public AppUserController(AppUserService appUserService) {
@@ -20,14 +22,21 @@ public class AppUserController {
     }
 
     @PostMapping
-    public ResponseEntity<AppUser> createAppUser(@Valid @RequestBody AppUser appUser) {
+    public ResponseEntity<?> createAppUser(@Valid @RequestBody AppUser appUser, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
         AppUser createdAppUser = appUserService.createUser(appUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdAppUser);
+        return new ResponseEntity<>(createdAppUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppUser> updateUser(@PathVariable Long id, @Valid @RequestBody AppUser user) {
-        return ResponseEntity.ok(appUserService.updateUser(id, user));
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody AppUser user, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+        AppUser updatedUser = appUserService.updateUser(id, user);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")

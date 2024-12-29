@@ -5,12 +5,15 @@ import com.ELearningPlatform.serviceinterface.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/roles")
+@Validated
 public class RoleController {
     private final RoleService roleService;
 
@@ -19,13 +22,19 @@ public class RoleController {
     }
 
     @PostMapping
-    public ResponseEntity<Role> createRole(@Valid @RequestBody Role role) {
+    public ResponseEntity<?> createRole(@Valid @RequestBody Role role, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
         Role createdRole = roleService.createRole(role);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdRole);
+        return new ResponseEntity<>(createdRole, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Role> updateRole(@PathVariable Long id, @Valid @RequestBody Role role) {
+    public ResponseEntity<?> updateRole(@PathVariable Long id, @Valid @RequestBody Role role, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
         return ResponseEntity.ok(roleService.updateRole(id, role));
     }
 

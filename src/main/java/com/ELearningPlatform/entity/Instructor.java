@@ -3,6 +3,7 @@ package com.ELearningPlatform.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -18,14 +19,18 @@ public class Instructor {
 
     @NotBlank(message = "Instructor name is required")
     @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
+    @Pattern(regexp = "^[a-zA-Z\\s]*$", message = "Name can only contain letters and spaces")
     private String name;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Email must be valid")
+    @Pattern(
+            regexp = "^[a-z0-9+_.-]+@(gmail\\.com|yahoo\\.com|outlook\\.com|hotmail\\.com)$",
+            message = "Email must be lowercase and from a valid provider (gmail.com, yahoo.com, outlook.com, hotmail.com)"
+    )
     private String email;
 
     @NotBlank(message = "Specialization is required")
-    @Size(max = 100, message = "Specialization must be up to 100 characters")
+    @Size(min = 2, max = 100, message = "Specialization must be between 2 and 100 characters")
     private String specialization;
 
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL)
