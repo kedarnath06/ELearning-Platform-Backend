@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/appuser-changelog.yaml
+  - include:
+      file: db/changelog/role-changelog.yaml
+  - include:
+      file: db/changelog/course-changelog.yaml
+  - include:
+      file: db/changelog/instructor-changelog.yaml
+  - include:
+      file: db/changelog/student-changelog.yaml
+  - include:
+      file: db/changelog/enrollment-changelog.yaml
+

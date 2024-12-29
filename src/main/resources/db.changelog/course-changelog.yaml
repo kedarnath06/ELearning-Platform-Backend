@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: kedar
+      changes:
+        - createTable:
+            tableName: courses
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: DATE
+              - column:
+                  name: end_date
+                  type: DATE
+              - column:
+                  name: instructor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: courses
+            baseColumnNames: instructor_id
+            referencedTableName: instructors
+            referencedColumnNames: id

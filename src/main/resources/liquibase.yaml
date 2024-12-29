@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elearningplatform
+    username: postgres
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+
+# Change log file path
+liquibase:
+  change-log: classpath:db/changelog/master/db.changelog-master.yaml
